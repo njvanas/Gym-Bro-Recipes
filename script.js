@@ -1,3 +1,32 @@
+// Page Loading Effect
+document.body.classList.add('loading');
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.body.classList.remove('loading');
+    }, 500);
+});
+
+// Scroll Progress Indicator
+const scrollProgress = document.createElement('div');
+scrollProgress.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff3366, #9933ff, #00d4ff);
+    z-index: 9999;
+    transform-origin: left;
+    transition: width 0.1s ease;
+    box-shadow: 0 0 20px rgba(255, 51, 102, 0.8);
+`;
+document.body.appendChild(scrollProgress);
+
+window.addEventListener('scroll', () => {
+    const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (window.scrollY / windowHeight) * 100;
+    scrollProgress.style.width = scrolled + '%';
+});
+
 // Navbar Scroll Effect
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
@@ -151,6 +180,54 @@ document.addEventListener('mousemove', (e) => {
             card.style.setProperty('--mouse-y', `${y}px`);
         }
     });
+});
+
+// Scroll to Top Button
+const scrollToTopBtn = document.createElement('button');
+scrollToTopBtn.innerHTML = '↑';
+scrollToTopBtn.style.cssText = `
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 55px;
+    height: 55px;
+    background: linear-gradient(135deg, #ff3366, #9933ff);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 8px 25px rgba(255, 51, 102, 0.6), 0 0 40px rgba(153, 51, 255, 0.4);
+`;
+document.body.appendChild(scrollToTopBtn);
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 500) {
+        scrollToTopBtn.style.opacity = '1';
+        scrollToTopBtn.style.visibility = 'visible';
+    } else {
+        scrollToTopBtn.style.opacity = '0';
+        scrollToTopBtn.style.visibility = 'hidden';
+    }
+});
+
+scrollToTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+scrollToTopBtn.addEventListener('mouseenter', () => {
+    scrollToTopBtn.style.transform = 'scale(1.15) translateY(-5px)';
+    scrollToTopBtn.style.boxShadow = '0 12px 35px rgba(255, 51, 102, 0.8), 0 0 60px rgba(153, 51, 255, 0.6)';
+});
+
+scrollToTopBtn.addEventListener('mouseleave', () => {
+    scrollToTopBtn.style.transform = 'scale(1) translateY(0)';
+    scrollToTopBtn.style.boxShadow = '0 8px 25px rgba(255, 51, 102, 0.6), 0 0 40px rgba(153, 51, 255, 0.4)';
 });
 
 // Card navigation function (global)
