@@ -8,6 +8,30 @@ window.addEventListener('scroll', () => {
     }
 });
 
+// Parallax Scrolling Effect
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const hero = document.querySelector('.hero');
+    if (hero) {
+        const parallaxSpeed = 0.5;
+        hero.style.transform = `translateY(${scrolled * parallaxSpeed}px)`;
+    }
+
+    // Parallax for cards
+    const cards = document.querySelectorAll('.content-card, .preview-card');
+    cards.forEach((card, index) => {
+        const cardTop = card.offsetTop;
+        const cardHeight = card.offsetHeight;
+        const windowHeight = window.innerHeight;
+        const scrollPosition = window.pageYOffset;
+
+        if (scrollPosition > cardTop - windowHeight && scrollPosition < cardTop + cardHeight) {
+            const parallax = (scrollPosition - cardTop + windowHeight) * 0.1;
+            card.style.transform = `translateY(-${parallax}px)`;
+        }
+    });
+});
+
 // Mobile Menu Toggle
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
@@ -89,27 +113,44 @@ if (sections.length > 0) {
     });
 }
 
-// Add fade-in animation on scroll
+// Add dramatic fade-in animation on scroll
 const observerOptions = {
     threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
+    rootMargin: '0px 0px -100px 0px'
 };
 
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
+            entry.target.style.transform = 'translateY(0) scale(1) rotateX(0deg)';
+            entry.target.style.filter = 'blur(0px)';
         }
     });
 }, observerOptions);
 
-// Observe content cards
-document.querySelectorAll('.content-card').forEach(card => {
+// Observe content cards with 3D entrance
+document.querySelectorAll('.content-card, .feature-item, .preview-card').forEach((card, index) => {
     card.style.opacity = '0';
-    card.style.transform = 'translateY(20px)';
-    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    card.style.transform = 'translateY(60px) scale(0.9) rotateX(10deg)';
+    card.style.filter = 'blur(5px)';
+    card.style.transition = `opacity 0.8s ease ${index * 0.1}s, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s, filter 0.8s ease ${index * 0.1}s`;
     observer.observe(card);
+});
+
+// Mouse tracking glow effect
+document.addEventListener('mousemove', (e) => {
+    const cards = document.querySelectorAll('.preview-card, .content-card');
+    cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        }
+    });
 });
 
 // Card navigation function (global)
